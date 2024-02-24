@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran/src/screens/home/quran/quran_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,26 +9,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Widget> tabs = [
-    const Tab(text: "Surat"),
-    const Tab(text: "Juz"),
-    const Tab(text: "Penanda"),
-  ];
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {
+    const List<Widget> widgetOptions = <Widget>[
+      QuranPage(),
+      Text(
+        'Index 1: Business',
+      ),
+      Text(
+        'Index 2: School',
+      ),
+    ];
     return DefaultTabController(
-        length: tabs.length,
+        length: widgetOptions.length,
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Quran Tadabbur"),
-            bottom: TabBar(tabs: tabs),
+          body: widgetOptions.elementAt(index),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: index,
+            onTap: (newIndex) {
+              setState(() {
+                index = newIndex;
+              });
+            },
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.menu_book), label: 'Al-Quran'),
+              BottomNavigationBarItem(icon: Icon(Icons.mic), label: 'Murotal'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.settings), label: 'Pengaturan'),
+            ],
           ),
-          body: const TabBarView(children: [
-            Center(child: Text("Hello")),
-            Center(child: Text("Hello")),
-            Center(child: Text("Hello")),
-          ]),
         ));
   }
 }
