@@ -1,0 +1,6 @@
+{
+  "appTitle": "quran",
+  "@appTitle": {
+    "description": "The title of the application"
+  }
+}
