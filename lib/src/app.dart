@@ -19,7 +19,7 @@ class _QuranAppState extends State<QuranApp> {
             seedColor: const Color.fromARGB(255, 4, 85, 46)),
         useMaterial3: true,
       ),
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );
