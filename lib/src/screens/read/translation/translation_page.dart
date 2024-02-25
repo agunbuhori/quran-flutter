@@ -51,13 +51,6 @@ class _TranslationPageState extends State<TranslationPage> {
     setState(() {
       ayahs = tempAyahs;
     });
-
-    Future.delayed(const Duration(seconds: 2), () {
-      showDialog(
-        context: context,
-        builder: (context) => const AyahSelectorModal(),
-      );
-    });
   }
 
   Widget renderAyah(BuildContext context, int index) {
