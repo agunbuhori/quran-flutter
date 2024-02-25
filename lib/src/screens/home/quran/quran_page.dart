@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quran/src/config/sqlite.dart';
+import 'package:quran/src/screens/home/quran/tabs/history_tab.dart';
 import 'package:quran/src/screens/home/quran/tabs/juz_tab.dart';
 import 'package:quran/src/screens/home/quran/tabs/surah_tab.dart';
-import 'package:sqflite/sqflite.dart';
 
 class QuranPage extends StatefulWidget {
   const QuranPage({super.key});
@@ -16,21 +15,8 @@ class _QuranPageState extends State<QuranPage> {
   List<Widget> tabs = [
     const SurahTab(),
     const JuzTab(),
-    const SurahTab(),
+    const HistoryTab(),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    loadSurahs();
-  }
-
-  Future<void> loadSurahs() async {
-    Database conn = await SQLite.getDatabase();
-    conn.query("Surah");
-
-    print("Loaded already");
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -17,6 +17,7 @@ dependencies:
     sdk: flutter
   path: ^1.9.0
   path_provider: ^2.1.2
+  scrollable_positioned_list: ^0.3.8
   sqflite: ^2.3.2
 
 dev_dependencies:
@@ -42,3 +43,6 @@ flutter:
     - family: SuraNames
       fonts:
         - asset: assets/fonts/sura_names.ttf
+    - family: Hafs
+      fonts:
+        - asset: assets/fonts/hafs.ttf

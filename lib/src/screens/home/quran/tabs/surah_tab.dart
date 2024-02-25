@@ -4,6 +4,7 @@ import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/components/surah_name.dart';
 import 'package:quran/src/screens/home/quran/components/list_detail.dart';
 import 'package:quran/src/screens/home/quran/components/number_frame.dart';
+import 'package:quran/src/screens/home/quran/components/read_surah_option_modal.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SurahTab extends StatefulWidget {
@@ -39,9 +40,33 @@ class _SurahTabState extends State<SurahTab> {
       filteredSurahs = surahs
           .where((item) =>
               item.nameSimple.toLowerCase().contains(value.toLowerCase()) ||
+              item.nameIndonesian.toLowerCase().contains(value.toLowerCase()) ||
               item.id.toString() == value)
           .toList();
     });
+  }
+
+  void onSurahClicked(Surah surah) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (BuildContext buildContext, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
+        return ReadSurahOptionModal(
+          surah: surah,
+        );
+      },
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 200),
+      transitionBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation, Widget child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
   }
 
   Widget renderSurahItem(BuildContext context, int index) {
@@ -61,7 +86,9 @@ class _SurahTabState extends State<SurahTab> {
     Surah surah = filteredSurahs[index - 1];
 
     return InkWell(
-        onTap: () {},
+        onTap: () {
+          onSurahClicked(surah);
+        },
         child: Container(
           color: index % 2 == 1
               ? Colors.black.withOpacity(0.1)

@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 
 class SQLite {
   static String source = "quran.db";
-  static String databaseName = "quran_copy.db";
+  static String databaseName = "quran_copy_11.db";
 
   static Future<String> getDatabasePath() async {
     Directory directory = await getApplicationDocumentsDirectory();

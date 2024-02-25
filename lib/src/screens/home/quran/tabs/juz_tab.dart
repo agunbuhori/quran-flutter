@@ -3,7 +3,6 @@ import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/models/juz.dart';
 import 'package:quran/src/screens/home/quran/components/list_detail.dart';
 import 'package:quran/src/screens/home/quran/components/number_frame.dart';
-import 'package:quran/src/screens/home/quran/tabs/surah_tab.dart';
 import 'package:sqflite/sqflite.dart';
 
 class JuzTab extends StatefulWidget {
