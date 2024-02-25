@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran/src/config/sqlite.dart';
+import 'package:quran/src/screens/home/quran/tabs/juz_tab.dart';
 import 'package:quran/src/screens/home/quran/tabs/surah_tab.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -14,7 +15,7 @@ class _QuranPageState extends State<QuranPage> {
   int index = 0;
   List<Widget> tabs = [
     const SurahTab(),
-    const SurahTab(),
+    const JuzTab(),
     const SurahTab(),
   ];
 

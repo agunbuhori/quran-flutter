@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/components/surah_name.dart';
+import 'package:quran/src/screens/home/quran/components/list_detail.dart';
+import 'package:quran/src/screens/home/quran/components/number_frame.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SurahTab extends StatefulWidget {
@@ -69,8 +71,8 @@ class _SurahTabState extends State<SurahTab> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SurahFrame(number: surah.id),
-                SurahDetail(
+                NumberFrame(number: surah.id),
+                ListDetail(
                     title: surah.nameComplex, subtitle: surah.nameIndonesian),
                 const Spacer(),
                 SurahName(text: surah.id.toString().padLeft(3, '0'))
@@ -87,49 +89,5 @@ class _SurahTabState extends State<SurahTab> {
     }
     return ListView.builder(
         itemBuilder: renderSurahItem, itemCount: filteredSurahs.length + 1);
-  }
-}
-
-class SurahFrame extends StatelessWidget {
-  final int number;
-  const SurahFrame({super.key, required this.number});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: 40,
-        height: 40,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/quran/frame.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Center(
-            child: Text(
-          number.toString(),
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        )));
-  }
-}
-
-class SurahDetail extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const SurahDetail({super.key, required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(subtitle)
-        ],
-      ),
-    );
   }
 }
