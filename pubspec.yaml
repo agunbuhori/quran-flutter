@@ -10,6 +10,7 @@ environment:
   sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.4
@@ -36,6 +37,7 @@ flutter:
     # Add assets from the images directory to the application.
     - assets/images/
     - assets/images/quran/
+    - assets/images/quran/tilawah/
     - assets/databases/
     - assets/fonts/
 
@@ -45,4 +47,4 @@ flutter:
         - asset: assets/fonts/sura_names.ttf
     - family: Hafs
       fonts:
-        - asset: assets/fonts/hafs.ttf
+        - asset: assets/fonts/uthmani_hafs_v12.otf

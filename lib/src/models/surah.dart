@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+import 'package:quran/src/config/sqlite.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Surah {
@@ -57,5 +59,13 @@ class Surah {
       pageStart: map['page_start'],
       pageEnd: map['page_end'],
     );
+  }
+
+  static Future<List<Surah>> getAll() async {
+    Database database = await SQLite.getDatabase();
+    List<Map<String, dynamic>> query = await database.query('Surah');
+    database.close();
+
+    return query.map((e) => Surah.fromMap(e)).toList();
   }
 }

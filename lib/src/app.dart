@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran/src/screens/home/home_page.dart';
+import 'package:quran/src/features/home/home_page.dart';
 
 class QuranApp extends StatefulWidget {
   const QuranApp({super.key});
