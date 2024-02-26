@@ -20,18 +20,12 @@ class SQLite {
 
   static Future<Database> checkDatabase(
       String source, String databaseName) async {
-    // Get the directory for the app's documents directory.
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, databaseName);
 
-    // Check if the database already exists.
     bool exists = await databaseExists(path);
 
     if (!exists) {
-      // Should happen only the first time you launch your application
-      print("Copying existing database from $source to $path");
-
-      // Copy the database file from the assets folder to the documents directory.
       ByteData data = await rootBundle.load(join('assets/databases', source));
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
@@ -40,7 +34,6 @@ class SQLite {
       print("Database already exists at path $path");
     }
 
-    // Open the database.
     return await openDatabase(path, readOnly: false);
   }
 

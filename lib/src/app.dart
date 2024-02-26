@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:quran/src/features/home/home_page.dart';
 
 class QuranApp extends StatefulWidget {
@@ -11,7 +12,7 @@ class QuranApp extends StatefulWidget {
 class _QuranAppState extends State<QuranApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       darkTheme: ThemeData(brightness: Brightness.dark),
       theme: ThemeData(

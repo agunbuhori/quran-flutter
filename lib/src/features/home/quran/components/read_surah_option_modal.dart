@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:quran/src/features/translation/translation_page.dart';
 import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/widgets/surah_name.dart';
-import 'package:quran/src/features/read/tilawah/tilawah_page.dart';
-import 'package:quran/src/features/read/translation/translation_page.dart';
+import 'package:quran/src/features/tilawah/tilawah_page.dart';
 
 class ReadSurahOptionModal extends StatelessWidget {
   final Surah surah;

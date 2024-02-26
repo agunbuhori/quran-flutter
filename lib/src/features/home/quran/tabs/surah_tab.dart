@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:quran/src/config/sqlite.dart';
+import 'package:get/instance_manager.dart';
 import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/widgets/surah_name.dart';
 import 'package:quran/src/features/home/quran/components/list_detail.dart';
 import 'package:quran/src/features/home/quran/components/number_frame.dart';
 import 'package:quran/src/features/home/quran/components/read_surah_option_modal.dart';
-import 'package:sqflite/sqflite.dart';
 
 class SurahTab extends StatefulWidget {
   const SurahTab({super.key});
@@ -15,24 +14,10 @@ class SurahTab extends StatefulWidget {
 }
 
 class _SurahTabState extends State<SurahTab> {
-  List<Surah> surahs = [];
-  List<Surah> filteredSurahs = [];
+  List<Surah> surahs = Get.find(tag: 'surahs');
+  List<Surah> filteredSurahs = Get.find(tag: 'surahs');
 
-  @override
-  void initState() {
-    super.initState();
-    loadSurahs();
-  }
-
-  Future<void> loadSurahs() async {
-    List<Surah> tempSurahs = await Surah.getAll();
-    setState(() {
-      surahs = tempSurahs;
-      filteredSurahs = [...surahs];
-    });
-  }
-
-  void searchSurahs(String value) async {
+  searchSurahs(String value) async {
     setState(() {
       filteredSurahs = surahs
           .where((item) =>

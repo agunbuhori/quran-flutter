@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran/src/common/consts/local_assets.dart';
 
 class AyahFrame extends StatelessWidget {
   final int number;
@@ -9,9 +10,9 @@ class AyahFrame extends StatelessWidget {
     return Container(
         width: 40,
         height: 40,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/quran/ayah_frame.png'),
+            image: AssetImage(LocalAssets.ayahFrame),
             fit: BoxFit.cover,
           ),
         ),

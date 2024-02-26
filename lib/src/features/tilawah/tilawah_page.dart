@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:quran/src/common/consts/local_assets.dart';
 import 'package:quran/src/models/surah.dart';
 
 class TilawahPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class _TilawahPageState extends State<TilawahPage> {
       color: Colors.white,
       child: Center(
           child: Image.asset(
-        'assets/images/quran/tilawah/page${(index + 1).toString().padLeft(3, '0')}.png', // Path to your image asset
+        LocalAssets.getQuranPage(index + 1), // Path to your image asset
         fit: BoxFit.cover, // Adjust how the image fits into the container
       )),
     );

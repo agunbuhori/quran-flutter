@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/widgets/clickable_sup_text.dart';
-import 'package:quran/src/features/read/translation/components/ayah_frame.dart';
+import 'package:quran/src/features/translation/components/ayah_frame.dart';
 
 class AyahTranslation extends StatelessWidget {
   final Ayah ayah;
@@ -24,12 +24,14 @@ class AyahTranslation extends StatelessWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                  Text(
-                    ayah.textUthmani,
-                    textDirection: TextDirection.rtl,
-                    style: const TextStyle(
-                        fontSize: 26, height: 1.85, fontFamily: 'Hafs'),
-                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        ayah.textUthmani,
+                        textDirection: TextDirection.rtl,
+                        style: const TextStyle(
+                            fontSize: 26, height: 1.85, fontFamily: 'Hafs'),
+                      )),
                   const SizedBox(height: 10),
                   ClickableSupText(
                       text: ayah.translation ?? "", onFootnotePressed: (id) {}),
