@@ -81,8 +81,9 @@ class _TranslationPageState extends State<TranslationPage> {
                 SurahName(text: "${surah.id.toString().padLeft(3, '0')}surah"),
             bottom: TabBar(
                 isScrollable: true,
-                onTap: (value) {
-                  loadAyahs(114 - value);
+                onTap: (value) async {
+                  await loadAyahs(114 - value);
+                  itemScrollController.jumpTo(index: 0);
                 },
                 tabs: surahs
                     .map((e) => Tab(text: "${e.id}. ${e.nameComplex}"))
