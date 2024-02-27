@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
+import 'package:quran/src/common/consts/getx_tags.dart';
 import 'package:quran/src/models/juz.dart';
 import 'package:quran/src/features/home/quran/components/list_detail.dart';
 import 'package:quran/src/features/home/quran/components/number_frame.dart';
@@ -12,7 +13,7 @@ class JuzTab extends StatefulWidget {
 }
 
 class _JuzTabState extends State<JuzTab> {
-  List<Juz> juzs = Get.find(tag: 'juzs');
+  List<Juz> juzs = Get.find(tag: GetxTags.surahs);
 
   Widget juzBuilder(BuildContext context, int index) {
     Juz juz = juzs[index];

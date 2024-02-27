@@ -1,4 +1,5 @@
 import 'package:get/instance_manager.dart';
+import 'package:quran/src/common/consts/getx_tags.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/models/juz.dart';
 import 'package:quran/src/models/surah.dart';
@@ -12,7 +13,7 @@ class SettingsData {
 
   static Future<void> loadSurahs() async {
     List<Surah> surahs = await Surah.getAll();
-    Get.put(surahs, tag: 'surahs');
+    Get.put(surahs, tag: GetxTags.surahs);
   }
 
   static Future<void> loadJuzs() async {
@@ -37,7 +38,7 @@ class SettingsData {
         tempJuzs.add(juz);
       }
 
-      Get.put(tempJuzs, tag: 'juzs');
+      Get.put(tempJuzs, tag: GetxTags.juzs);
     }
   }
 }

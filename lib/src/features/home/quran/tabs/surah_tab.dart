@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
+import 'package:quran/src/common/consts/getx_tags.dart';
 import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/widgets/surah_name.dart';
 import 'package:quran/src/features/home/quran/components/list_detail.dart';
@@ -14,8 +15,8 @@ class SurahTab extends StatefulWidget {
 }
 
 class _SurahTabState extends State<SurahTab> {
-  List<Surah> surahs = Get.find(tag: 'surahs');
-  List<Surah> filteredSurahs = Get.find(tag: 'surahs');
+  List<Surah> surahs = Get.find(tag: GetxTags.surahs);
+  List<Surah> filteredSurahs = Get.find(tag: GetxTags.surahs);
 
   searchSurahs(String value) async {
     setState(() {

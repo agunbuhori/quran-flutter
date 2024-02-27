@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
+import 'package:quran/src/common/consts/getx_tags.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/features/translation/components/bismillah.dart';
 import 'package:quran/src/features/translation/components/surah_header.dart';
@@ -24,7 +25,7 @@ class TranslationPage extends StatefulWidget {
 
 class _TranslationPageState extends State<TranslationPage> {
   late Surah surah = widget.surah;
-  List<Surah> surahs = Get.find(tag: 'surahs');
+  List<Surah> surahs = Get.find(tag: GetxTags.surahs);
   List<Ayah> ayahs = [];
   List<Kalimah> kalimahs = [];
 
