@@ -18,10 +18,12 @@ class _TilawahPageState extends State<TilawahPage> {
     return Container(
       color: Colors.white,
       child: Center(
-          child: Image.asset(
-        LocalAssets.getQuranPage(index + 1), // Path to your image asset
-        fit: BoxFit.cover, // Adjust how the image fits into the container
-      )),
+          child: Stack(children: [
+        Image.asset(
+          LocalAssets.getQuranPage(index + 1), // Path to your image asset
+          fit: BoxFit.cover, // Adjust how the image fits into the container
+        ),
+      ])),
     );
   }
 

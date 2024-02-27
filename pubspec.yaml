@@ -48,3 +48,6 @@ flutter:
     - family: Hafs
       fonts:
         - asset: assets/fonts/uthmani_hafs_v12.otf
+    - family: Bismillah
+      fonts:
+        - asset: assets/fonts/bismillah.ttf

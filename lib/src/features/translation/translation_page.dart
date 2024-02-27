@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:quran/src/config/sqlite.dart';
+import 'package:quran/src/features/translation/components/bismillah.dart';
+import 'package:quran/src/features/translation/components/surah_header.dart';
 import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/models/kalimah.dart';
 import 'package:quran/src/models/surah.dart';
@@ -59,7 +61,17 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   Widget renderAyah(BuildContext context, int index) {
-    Ayah ayah = ayahs[index];
+    if (index == 0) {
+      return SurahHeader(surah: surah);
+    }
+
+    late bool hasBismillah = surah.bismillahPre == 1;
+
+    if (hasBismillah && index == 1) {
+      return const Bismillah();
+    }
+
+    Ayah ayah = ayahs[index - (hasBismillah ? 2 : 1)];
     return Column(
       children: [
         AyahTranslation(
@@ -83,7 +95,8 @@ class _TranslationPageState extends State<TranslationPage> {
                 isScrollable: true,
                 onTap: (value) async {
                   await loadAyahs(114 - value);
-                  itemScrollController.jumpTo(index: 0);
+                  itemScrollController.scrollTo(
+                      index: 0, duration: const Duration(milliseconds: 300));
                 },
                 tabs: surahs
                     .map((e) => Tab(text: "${e.id}. ${e.nameComplex}"))
@@ -92,7 +105,7 @@ class _TranslationPageState extends State<TranslationPage> {
                     .toList()),
           ),
           body: ScrollablePositionedList.builder(
-            itemCount: ayahs.length,
+            itemCount: ayahs.length + (surah.bismillahPre == 1 ? 2 : 1),
             itemBuilder: renderAyah,
             itemScrollController: itemScrollController,
             scrollOffsetController: scrollOffsetController,

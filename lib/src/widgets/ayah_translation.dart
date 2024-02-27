@@ -12,8 +12,9 @@ class AyahTranslation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color:
-          ayah.id % 2 == 0 ? Colors.black.withOpacity(0.2) : Colors.transparent,
+      color: ayah.ayahNumber % 2 == 0
+          ? Colors.black.withOpacity(0.2)
+          : Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         child: Row(

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/instance_manager.dart';
 import 'package:quran/src/config/sqlite.dart';
-import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/settings/settings_controller.dart';
+import 'package:quran/src/settings/settings_data.dart';
 import 'package:quran/src/settings/settings_service.dart';
 
 import 'src/app.dart';
-
-Future<void> loadSurahs() async {
-  List<Surah> surahs = await Surah.getAll();
-  Get.put(surahs, tag: 'surahs');
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +17,9 @@ void main() async {
   // This prevents a sudden theme change when the app is first displayed.
   await settingsController.loadSettings();
 
-  await loadSurahs();
+  // Load data initially
+  // surahs and juzs
+  await SettingsData.initialize();
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
   // SettingsView.
