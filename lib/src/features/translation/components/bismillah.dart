@@ -5,11 +5,11 @@ class Bismillah extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Center(
-          child: Text('﷽',
-              style: TextStyle(fontSize: 24, fontFamily: 'Bismillah'))),
+    return Container(
+      padding: const EdgeInsets.only(top: 20, bottom: 10),
+      child: const Center(
+          child: Text('6',
+              style: TextStyle(fontSize: 16, fontFamily: 'Bismillah'))),
     );
   }
 }

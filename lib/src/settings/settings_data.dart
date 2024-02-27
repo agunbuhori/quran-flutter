@@ -34,7 +34,7 @@ class SettingsData {
         Juz juz = Juz(
             number: i,
             startFrom:
-                "Mulai dari ${ayahs.first['name_simple']} ayat ${ayahs.first['ayah_number']}");
+                "Mulai dari ${ayahs.first['name_complex']} ayat ${ayahs.first['ayah_number']}");
         tempJuzs.add(juz);
       }
 

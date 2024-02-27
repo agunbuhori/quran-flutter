@@ -10,11 +10,8 @@ class AyahTranslation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      color: ayah.ayahNumber % 2 == 0
-          ? Colors.black.withOpacity(0.2)
-          : Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         child: Row(
@@ -35,7 +32,7 @@ class AyahTranslation extends StatelessWidget {
                       )),
                   const SizedBox(height: 10),
                   ClickableSupText(
-                      text: ayah.translation ?? "", onFootnotePressed: (id) {}),
+                      text: ayah.translation ?? "", onTap: (id) {}),
                 ])),
           ],
         ),

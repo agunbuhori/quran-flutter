@@ -46,6 +46,8 @@ class _TranslationPageState extends State<TranslationPage> {
   Future<void> loadAyahs(int id) async {
     Database database = await SQLite.getDatabase();
 
+    await Future.delayed(const Duration(milliseconds: 300));
+
     List<Map<String, dynamic>> ayahsQuery = await database.rawQuery('''
           SELECT *, AyahTranslation.* FROM Ayah
           JOIN AyahTranslation
@@ -90,8 +92,7 @@ class _TranslationPageState extends State<TranslationPage> {
         length: surahs.length,
         child: Scaffold(
           appBar: AppBar(
-            title:
-                SurahName(text: "${surah.id.toString().padLeft(3, '0')}surah"),
+            title: const Text("Terjemah"),
             bottom: TabBar(
                 isScrollable: true,
                 onTap: (value) async {

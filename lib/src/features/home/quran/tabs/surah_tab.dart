@@ -73,9 +73,6 @@ class _SurahTabState extends State<SurahTab> {
           onSurahClicked(surah);
         },
         child: Container(
-          color: index % 2 == 1
-              ? Colors.black.withOpacity(0.1)
-              : Colors.transparent,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(

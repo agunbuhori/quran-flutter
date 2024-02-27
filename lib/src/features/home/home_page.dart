@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quran/src/features/home/murotal/murotal_page.dart';
 import 'package:quran/src/features/home/quran/quran_page.dart';
+import 'package:quran/src/features/home/settings/settings_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,12 +17,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     const List<Widget> widgetOptions = <Widget>[
       QuranPage(),
-      Text(
-        'Index 1: Business',
-      ),
-      Text(
-        'Index 2: School',
-      ),
+      MurotalPage(),
+      SettingsPage()
     ];
     return DefaultTabController(
         length: widgetOptions.length,

@@ -17,10 +17,10 @@ class _QuranAppState extends State<QuranApp> {
       darkTheme: ThemeData(brightness: Brightness.dark),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 4, 85, 46)),
+            seedColor: const Color.fromARGB(255, 106, 55, 5)),
         useMaterial3: true,
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );

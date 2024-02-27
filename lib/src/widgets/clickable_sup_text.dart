@@ -1,57 +1,58 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class ClickableSupText extends StatelessWidget {
   final String text;
-  final Function(int) onFootnotePressed;
+  final Function(int)? onTap;
 
-  const ClickableSupText(
-      {super.key, required this.text, required this.onFootnotePressed});
+  const ClickableSupText({
+    super.key,
+    required this.text,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    List<InlineSpan> inlineSpans = [];
-    RegExp exp = RegExp(r"<sup\sfoot_note=(\d+)>(\d+)</sup>");
-    int start = 0;
-
-    for (RegExpMatch match in exp.allMatches(text)) {
-      // Add text before the sup tag
-      inlineSpans.add(TextSpan(text: text.substring(start, match.start)));
-
-      // Extract footnote id and sup text
-      int footnoteId = int.parse(match.group(1)!);
-      String supText = match.group(2)!;
-
-      // Create clickable sup widget with sup number at top
-      inlineSpans.add(WidgetSpan(
-        alignment: PlaceholderAlignment.top,
-        baseline: TextBaseline.alphabetic,
-        child: GestureDetector(
-          child: Text(
-            " [$supText]",
-            textAlign: TextAlign.justify,
-            style: const TextStyle(
-              fontSize: 10.0, // Adjust font size as needed
-              color: Colors.blue, // Change color as needed
-            ),
-          ),
-          onTap: () {
-            onFootnotePressed(footnoteId);
-          },
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: SelectableText.rich(
+        TextSpan(
+          children: _buildTextSpans(),
         ),
-      ));
-
-      start = match.end;
-    }
-
-    // Add remaining text
-    inlineSpans.add(TextSpan(text: text.substring(start)));
-
-    return RichText(
-      textAlign: TextAlign.justify,
-      textDirection: TextDirection.ltr,
-      text: TextSpan(
-        children: inlineSpans,
+        textAlign: TextAlign.justify,
       ),
     );
+  }
+
+  List<InlineSpan> _buildTextSpans() {
+    List<InlineSpan> spans = [];
+
+    RegExp regex = RegExp(r'<sup foot_note=(\d+)>(\d+)</sup>');
+
+    List<RegExpMatch> matches = regex.allMatches(text).toList();
+
+    int currentIndex = 0;
+    for (RegExpMatch match in matches) {
+      spans.add(TextSpan(text: text.substring(currentIndex, match.start)));
+      spans.add(
+        TextSpan(
+          text: " [${match.group(2)}]",
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              if (onTap != null) {
+                onTap!(int.parse(match.group(2)!));
+              }
+            },
+          style: const TextStyle(
+            color: Colors.blue,
+          ),
+        ),
+      );
+      currentIndex = match.end;
+    }
+
+    spans.add(TextSpan(text: text.substring(currentIndex)));
+
+    return spans;
   }
 }

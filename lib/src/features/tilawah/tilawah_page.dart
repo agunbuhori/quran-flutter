@@ -21,7 +21,6 @@ class _TilawahPageState extends State<TilawahPage> {
 
   Widget renderPage(BuildContext contex, int index) {
     return Container(
-      color: Colors.white,
       child: Center(
           child: Stack(children: [
         PressableImage(

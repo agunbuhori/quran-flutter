@@ -13,14 +13,12 @@ class JuzTab extends StatefulWidget {
 }
 
 class _JuzTabState extends State<JuzTab> {
-  List<Juz> juzs = Get.find(tag: GetxTags.surahs);
+  List<Juz> juzs = Get.find(tag: GetxTags.juzs);
 
   Widget juzBuilder(BuildContext context, int index) {
     Juz juz = juzs[index];
     return InkWell(
       child: Container(
-        color:
-            index % 2 == 1 ? Colors.black.withOpacity(0.1) : Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
