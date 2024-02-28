@@ -3,6 +3,6 @@ class LocalAssets {
   static String surahFrame = "assets/images/quran/frame.png";
 
   static String getQuranPage(int number) {
-    return "assets/images/quran/tilawah/page${number.toString().padLeft(3, '0')}.png";
+    return "assets/images/quran/tilawah_1/${number.toString()}.png";
   }
 }

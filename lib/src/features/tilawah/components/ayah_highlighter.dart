@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
 
-class AyahHighlighter extends StatelessWidget {
-  const AyahHighlighter({super.key});
+class AyahHighlighter extends CustomPainter {
+  final double minX;
+  final double minY;
+  final double maxX;
+  final double maxY;
 
-  double calculateHeight(
-      double givenWidth, double originalWidth, double originalHeight) {
-    return (givenWidth * originalHeight) / originalWidth;
+  AyahHighlighter({
+    required this.minX,
+    required this.minY,
+    required this.maxX,
+    required this.maxY,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = Colors.brown.withOpacity(0.2) // Change color as needed
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 2.0; // Change stroke width as needed
+
+    final double width = maxX - minX + 4;
+    final double height = maxY - minY;
+
+    // Draw square
+    canvas.drawRect(
+      Rect.fromPoints(
+        Offset(minX, minY),
+        Offset(minX + width, minY + height),
+      ),
+      paint,
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    return Container(
-      width: screenWidth,
-      height: calculateHeight(screenWidth, 1024, 1657) /
-          15.3, // Set width to screen width
-      decoration: BoxDecoration(
-        color:
-            Colors.greenAccent.withOpacity(0.1), // Blue with 50% transparency
-        borderRadius:
-            BorderRadius.circular(5.0), // Adjust as per your requirement
-      ),
-    );
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }

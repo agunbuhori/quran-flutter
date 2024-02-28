@@ -40,7 +40,7 @@ flutter:
     # Add assets from the images directory to the application.
     - assets/images/
     - assets/images/quran/
-    - assets/images/quran/tilawah/
+    - assets/images/quran/tilawah_1/
     - assets/databases/
     - assets/fonts/
     - assets/json/pages/
