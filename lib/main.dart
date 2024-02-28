@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Page;
+import 'package:quran/src/config/realm_copier.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/settings/settings_controller.dart';
 import 'package:quran/src/settings/settings_data.dart';
@@ -20,6 +21,8 @@ void main() async {
   // Load data initially
   // surahs and juzs
   await SettingsData.initialize();
+  await copyRealmDatabase();
+
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
   // SettingsView.

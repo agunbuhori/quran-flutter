@@ -46,8 +46,6 @@ class _TranslationPageState extends State<TranslationPage> {
   Future<void> loadAyahs(int id) async {
     Database database = await SQLite.getDatabase();
 
-    await Future.delayed(const Duration(milliseconds: 300));
-
     List<Map<String, dynamic>> ayahsQuery = await database.rawQuery('''
           SELECT *, AyahTranslation.* FROM Ayah
           JOIN AyahTranslation
