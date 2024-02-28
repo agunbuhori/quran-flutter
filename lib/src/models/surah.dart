@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+import 'package:quran/src/common/consts/quran_database.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -62,7 +62,7 @@ class Surah {
   }
 
   static Future<List<Surah>> getAll() async {
-    Database database = await SQLite.getDatabase();
+    Database database = await SQLite.getDatabase(QuranDatabase.dbName);
     List<Map<String, dynamic>> query = await database.query('Surah');
     database.close();
 

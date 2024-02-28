@@ -5,17 +5,18 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SQLite {
-  static String source = "quran.db";
-  static String databaseName = "quran_copy_11.db";
+  static String prefix = "copy_";
 
-  static Future<String> getDatabasePath() async {
+  static Future<String> getDatabasePath(String database) async {
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = join(directory.path, databaseName);
+    String path = join(directory.path, "$prefix$database");
     return path;
   }
 
-  static Future<void> initialize() async {
-    await checkDatabase(source, databaseName);
+  static Future<void> initialize(List<String> databases) async {
+    databases.forEach((db) async {
+      await checkDatabase(db, "$prefix$db");
+    });
   }
 
   static Future<Database> checkDatabase(
@@ -37,8 +38,8 @@ class SQLite {
     return await openDatabase(path, readOnly: false);
   }
 
-  static Future<Database> getDatabase() async {
-    String path = await getDatabasePath();
+  static Future<Database> getDatabase(String database) async {
+    String path = await getDatabasePath(database);
     return await openDatabase(path);
   }
 }

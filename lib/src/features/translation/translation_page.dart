@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
+import 'package:quran/src/common/consts/quran_database.dart';
 import 'package:quran/src/common/consts/getx_tags.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/features/translation/components/bismillah.dart';
@@ -10,7 +11,6 @@ import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/models/kalimah.dart';
 import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/widgets/ayah_translation.dart';
-import 'package:quran/src/widgets/surah_name.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -44,7 +44,7 @@ class _TranslationPageState extends State<TranslationPage> {
   }
 
   Future<void> loadAyahs(int id) async {
-    Database database = await SQLite.getDatabase();
+    Database database = await SQLite.getDatabase(QuranDatabase.dbName);
 
     List<Map<String, dynamic>> ayahsQuery = await database.rawQuery('''
           SELECT *, AyahTranslation.* FROM Ayah

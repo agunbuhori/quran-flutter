@@ -7,6 +7,7 @@ class PressableImage extends StatelessWidget {
   const PressableImage(
       {super.key, required this.imageAssetPath, required this.onTap});
 
+  // Function to transform coordinates based on the new MaxX
   List<double> transformCoordinates(double oldX, double oldY, double oldMaxX,
       double oldMaxY, double newMaxX) {
     double scaleX = newMaxX / oldMaxX;
@@ -26,36 +27,38 @@ class PressableImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (details) {
-        Image image = Image.asset(imageAssetPath);
-        image.image.resolve(ImageConfiguration.empty).addListener(
-          ImageStreamListener((ImageInfo info, bool _) {
-            double imageWidth = info.image.width.toDouble();
-            double imageHeight = info.image.height.toDouble();
-            double screenWidth = MediaQuery.of(context).size.width;
+    return Center(
+      child: GestureDetector(
+        onTapDown: (details) {
+          Image image = Image.asset(imageAssetPath);
+          image.image.resolve(ImageConfiguration.empty).addListener(
+            ImageStreamListener((ImageInfo info, bool _) {
+              double imageWidth = info.image.width.toDouble();
+              double imageHeight = info.image.height.toDouble();
+              double screenWidth = MediaQuery.of(context).size.width;
 
-            double x = (details.localPosition.dx / imageWidth) * imageWidth;
-            double y = (details.localPosition.dy / imageHeight) * imageHeight;
+              double x = (details.localPosition.dx / imageWidth) * imageWidth;
+              double y = (details.localPosition.dy / imageHeight) * imageHeight;
 
-            double resizedImageHeight = getCalculatedImageHeightByRatio(
-                imageWidth, imageHeight, screenWidth);
+              double resizedImageHeight = getCalculatedImageHeightByRatio(
+                  imageWidth, imageHeight, screenWidth);
 
-            List<double> transformed = transformCoordinates(
-                x, y, screenWidth, resizedImageHeight, 1024);
-            // why 1120?
-            // because on database refer to 1120 width image
+              List<double> transformed = transformCoordinates(
+                  x, y, screenWidth, resizedImageHeight, 1024);
+              // why 1120?
+              // because on database refer to 1120 width image
 
-            onTap(transformed.elementAt(0), transformed.elementAt(1));
-          }),
-        );
-      },
-      child: Image.asset(
-        imageAssetPath,
-        width: MediaQuery.of(context)
-            .size
-            .width, // Lebar gambar mengikuti lebar layar
-        fit: BoxFit.fill, // Mengisi gambar ke dalam kontainer
+              onTap(transformed.elementAt(0), transformed.elementAt(1));
+            }),
+          );
+        },
+        child: Image.asset(
+          imageAssetPath,
+          width: MediaQuery.of(context)
+              .size
+              .width, // Lebar gambar mengikuti lebar layar
+          fit: BoxFit.fill, // Mengisi gambar ke dalam kontainer
+        ),
       ),
     );
   }
