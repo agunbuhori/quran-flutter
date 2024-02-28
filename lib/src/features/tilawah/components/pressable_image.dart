@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quran/src/common/consts/ayah_info_database.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/features/tilawah/components/ayah_highlighter.dart';
+import 'package:quran/src/models/ayah_info.dart';
 import 'package:sqflite/sqflite.dart';
 
 class PressableImage extends StatefulWidget {
@@ -15,7 +16,7 @@ class PressableImage extends StatefulWidget {
 }
 
 class _PressableImage extends State<PressableImage> {
-  late Widget higlights = const SizedBox();
+  late Widget highlights = const SizedBox();
   // final Function(double x, double y) onTap;
 
   List<double> convertToScreenCoordinate(
@@ -38,34 +39,123 @@ class _PressableImage extends State<PressableImage> {
     return [scaledMinX, scaledMinY, scaledMaxX, scaledMaxY];
   }
 
-  Future<void> searchTheSameGlyphs(int suraNumber, int ayahNumber) async {
+  Future<List<AyahInfo>> searchGlyphsByTheSameAyah(
+      int suraNumber, int ayahNumber) async {
     Database database = await SQLite.getDatabase(AyahInfoDatabase.dbName);
     List<Map<String, dynamic>> glyphsQuery = await database.query('glyphs',
         where: "sura_number = ? AND ayah_number = ?",
         whereArgs: [suraNumber, ayahNumber]);
 
-    if (glyphsQuery.isNotEmpty) {
-      List<Widget> temps = [];
+    return glyphsQuery.map((e) => AyahInfo.fromMap(e)).toList();
 
-      for (var g in glyphsQuery) {
-        List<double> scaled = convertToScreenCoordinate(
-            g['min_x'], g['min_y'], g['max_x'], g['max_y']);
+    // if (glyphsQuery.isNotEmpty) {
+    //   List<Widget> temps = [];
 
-        temps.add(Positioned(
-          child: CustomPaint(
-            painter: AyahHighlighter(
-                minX: scaled[0],
-                minY: scaled[1],
-                maxX: scaled[2],
-                maxY: scaled[3]),
-          ),
-        ));
+    //   for (var g in glyphsQuery) {
+    //     List<double> scaled = convertToScreenCoordinate(
+    //         g['min_x'], g['min_y'], g['max_x'], g['max_y']);
 
-        setState(() {
-          higlights = Stack(children: temps);
-        });
+    //     temps.add(Positioned(
+    //       child: CustomPaint(
+    //         painter: AyahHighlighter(
+    //             minX: scaled[0],
+    //             minY: scaled[1],
+    //             maxX: scaled[2],
+    //             maxY: scaled[3]),
+    //       ),
+    //     ));
+
+    //     setState(() {
+    //       higlights = Stack(children: temps);
+    //     });
+    //   }
+    // }
+  }
+
+  int findTheHighestY(List<AyahInfo> ayahInfos) {
+    int highest = ayahInfos.first.minY;
+
+    for (var ayahInfo in ayahInfos) {
+      if (ayahInfo.minY < highest) {
+        highest = ayahInfo.minY;
       }
     }
+
+    return highest;
+  }
+
+  int findTheNearestX(List<AyahInfo> ayahInfos) {
+    int nearest = ayahInfos.first.minX;
+
+    for (var ayahInfo in ayahInfos) {
+      if (ayahInfo.minX < nearest) {
+        nearest = ayahInfo.minX;
+      }
+    }
+
+    return nearest;
+  }
+
+  int findTheFartestX(List<AyahInfo> ayahInfos) {
+    int fartest = ayahInfos.first.maxX;
+
+    for (var ayahInfo in ayahInfos) {
+      if (ayahInfo.minX > fartest) {
+        fartest = ayahInfo.maxX;
+      }
+    }
+
+    return fartest;
+  }
+
+  int findTheLowestY(List<AyahInfo> ayahInfos) {
+    int lowest = ayahInfos.first.maxY;
+
+    for (var ayahInfo in ayahInfos) {
+      if (ayahInfo.minX < lowest) {
+        lowest = ayahInfo.maxY;
+      }
+    }
+
+    return lowest;
+  }
+
+  List<List<AyahInfo>> extractLines(List<AyahInfo> ayahInfos) {
+    List<List<AyahInfo>> groupedGlyphs = [];
+
+    int lineNumber = -1;
+    int index = -1;
+
+    for (var ayahInfo in ayahInfos) {
+      if (lineNumber != ayahInfo.lineNumber) {
+        index += 1;
+        lineNumber = ayahInfo.lineNumber;
+        groupedGlyphs.add([]);
+        groupedGlyphs[index].add(ayahInfo);
+      } else {
+        groupedGlyphs[index].add(ayahInfo);
+      }
+    }
+
+    return groupedGlyphs;
+  }
+
+  Widget drawLine(List<AyahInfo> lines) {
+    int nearestX = findTheNearestX(lines);
+    int fartestX = findTheFartestX(lines);
+    int lowestY = findTheLowestY(lines);
+    int highestY = findTheHighestY(lines);
+    List<double> scaled =
+        convertToScreenCoordinate(nearestX, lowestY, fartestX, highestY);
+
+    print(
+        "near ${scaled[0]} far ${scaled[2]} high ${scaled[3]} low ${scaled[1]}");
+
+    return Positioned(
+        child: CustomPaint(
+      painter: AyahHighlighter(
+          minX: scaled[0], minY: scaled[1], maxX: scaled[2], maxY: scaled[3]),
+    ));
   }
 
   Future<void> searchGlyphs(double x, double y) async {
@@ -80,8 +170,18 @@ class _PressableImage extends State<PressableImage> {
     ''', [widget.page, x, y, x, y]);
 
     if (glyphsQuery.isNotEmpty) {
-      searchTheSameGlyphs(
-          glyphsQuery.first['sura_number'], glyphsQuery.first['ayah_number']);
+      Map<String, dynamic> result = glyphsQuery.first;
+      List<List<AyahInfo>> lines = extractLines(await searchGlyphsByTheSameAyah(
+          result['sura_number'], result['ayah_number']));
+
+      List<Widget> drawnLines = [];
+      for (var line in lines) {
+        drawnLines.add(drawLine(line));
+      }
+
+      setState(() {
+        highlights = Stack(children: drawnLines);
+      });
     }
   }
 
@@ -143,7 +243,7 @@ class _PressableImage extends State<PressableImage> {
               fit: BoxFit.fitWidth, // Mengisi gambar ke dalam kontainer
             ),
           ),
-          higlights
+          highlights
         ],
       ),
     );
