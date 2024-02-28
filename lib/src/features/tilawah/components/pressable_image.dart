@@ -47,29 +47,6 @@ class _PressableImage extends State<PressableImage> {
         whereArgs: [suraNumber, ayahNumber]);
 
     return glyphsQuery.map((e) => AyahInfo.fromMap(e)).toList();
-
-    // if (glyphsQuery.isNotEmpty) {
-    //   List<Widget> temps = [];
-
-    //   for (var g in glyphsQuery) {
-    //     List<double> scaled = convertToScreenCoordinate(
-    //         g['min_x'], g['min_y'], g['max_x'], g['max_y']);
-
-    //     temps.add(Positioned(
-    //       child: CustomPaint(
-    //         painter: AyahHighlighter(
-    //             minX: scaled[0],
-    //             minY: scaled[1],
-    //             maxX: scaled[2],
-    //             maxY: scaled[3]),
-    //       ),
-    //     ));
-
-    //     setState(() {
-    //       higlights = Stack(children: temps);
-    //     });
-    //   }
-    // }
   }
 
   int findTheHighestY(List<AyahInfo> ayahInfos) {
@@ -147,10 +124,6 @@ class _PressableImage extends State<PressableImage> {
     int highestY = findTheHighestY(lines);
     List<double> scaled =
         convertToScreenCoordinate(nearestX, lowestY, fartestX, highestY);
-
-    print(
-        "near ${scaled[0]} far ${scaled[2]} high ${scaled[3]} low ${scaled[1]}");
-
     return Positioned(
         child: CustomPaint(
       painter: AyahHighlighter(
