@@ -21,9 +21,9 @@ class _PressableImage extends State<PressableImage> {
   List<double> convertToScreenCoordinate(
       int minX, int minY, int maxX, int maxY) {
     double imageWidth = 1024;
-    double imageHeight = 1657;
-    double screenWidth = 393;
-    double screenHeight = 636.88;
+    double imageHeight = 1656;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = screenWidth * (imageHeight / imageWidth);
 
     // Calculate scaling factors
     double scaleX = screenWidth / imageWidth;
@@ -140,7 +140,7 @@ class _PressableImage extends State<PressableImage> {
               width: MediaQuery.of(context)
                   .size
                   .width, // Lebar gambar mengikuti lebar layar
-              fit: BoxFit.fill, // Mengisi gambar ke dalam kontainer
+              fit: BoxFit.fitWidth, // Mengisi gambar ke dalam kontainer
             ),
           ),
           higlights

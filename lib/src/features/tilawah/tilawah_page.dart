@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:preload_page_view/preload_page_view.dart';
 import 'package:quran/src/common/consts/ayah_info_database.dart';
 import 'package:quran/src/common/consts/local_assets.dart';
 import 'package:quran/src/config/sqlite.dart';
@@ -17,15 +18,16 @@ class TilawahPage extends StatefulWidget {
 }
 
 class _TilawahPageState extends State<TilawahPage> {
-  late PageController pageController =
-      PageController(initialPage: widget.surah.pageStart - 1);
+  late PreloadPageController pageController =
+      PreloadPageController(initialPage: widget.surah.pageStart - 1);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("Baca")),
-        body: PageView.builder(
+        body: PreloadPageView.builder(
             controller: pageController,
+            preloadPagesCount: 5,
             reverse: true,
             itemBuilder: (BuildContext context, index) {
               return PressableImage(
