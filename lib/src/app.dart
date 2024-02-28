@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:quran/src/features/home/home_page.dart';
+import 'package:quran/src/settings/settings_controller.dart';
+import 'package:quran/src/settings/settings_service.dart';
 
 class QuranApp extends StatefulWidget {
   const QuranApp({super.key});
@@ -10,6 +12,9 @@ class QuranApp extends StatefulWidget {
 }
 
 class _QuranAppState extends State<QuranApp> {
+  final SettingsController settingsController =
+      SettingsController(SettingsService());
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -20,7 +25,7 @@ class _QuranAppState extends State<QuranApp> {
             seedColor: const Color.fromARGB(255, 106, 55, 5)),
         useMaterial3: true,
       ),
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );

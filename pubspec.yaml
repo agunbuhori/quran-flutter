@@ -10,6 +10,7 @@ environment:
   sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
+  audioplayers: ^5.2.1
   auto_size_text: ^3.0.0
   equatable: ^2.0.5
   flutter:
@@ -43,7 +44,6 @@ flutter:
     - assets/images/quran/tilawah_1/
     - assets/databases/
     - assets/fonts/
-    - assets/json/pages/
 
   fonts:
     - family: SuraNames

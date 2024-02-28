@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran/src/common/consts/ayah_info_database.dart';
+import 'package:quran/src/common/consts/quran_database.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/features/tilawah/components/ayah_highlighter.dart';
 import 'package:quran/src/models/ayah_info.dart';
@@ -8,8 +9,13 @@ import 'package:sqflite/sqflite.dart';
 class PressableImage extends StatefulWidget {
   final String imageAssetPath;
   final int page;
+  final Function(List<Map<String, dynamic>>) onSurahAyahFound;
+
   const PressableImage(
-      {super.key, required this.imageAssetPath, required this.page});
+      {super.key,
+      required this.imageAssetPath,
+      required this.page,
+      required this.onSurahAyahFound});
 
   @override
   State<PressableImage> createState() => _PressableImage();
@@ -25,7 +31,6 @@ class _PressableImage extends State<PressableImage> {
     double imageHeight = 1656;
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = screenWidth * (imageHeight / imageWidth);
-
     // Calculate scaling factors
     double scaleX = screenWidth / imageWidth;
     double scaleY = screenHeight / imageHeight;
@@ -155,7 +160,31 @@ class _PressableImage extends State<PressableImage> {
       setState(() {
         highlights = Stack(children: drawnLines);
       });
+
+      await database.close();
+      await findAyahAndSurah(result['ayah_number'], result['sura_number']);
     }
+  }
+
+  Future<List<Map<String, dynamic>>?> findAyahAndSurah(
+      int ayahNumber, int surahId) async {
+    Database database = await SQLite.getDatabase(QuranDatabase.dbName);
+    List<Map<String, dynamic>> ayahsQuery = await database.rawQuery('''
+        SELECT * FROM Ayah
+                JOIN AyahTranslation
+                  ON AyahTranslation.ayah_id = Ayah.id
+                WHERE Ayah.surah_id = ?
+                AND Ayah.ayah_number = ?
+        ''', [surahId, ayahNumber]);
+
+    List<Map<String, dynamic>> surahsQuery =
+        await database.query('Surah', where: "id = ?", whereArgs: [surahId]);
+
+    if (ayahsQuery.isNotEmpty && surahsQuery.isNotEmpty) {
+      widget.onSurahAyahFound([surahsQuery.first, ayahsQuery.first]);
+    }
+    database.close();
+    return null;
   }
 
   // Function to transform coordinates based on the new MaxX
@@ -194,7 +223,6 @@ class _PressableImage extends State<PressableImage> {
                       (details.localPosition.dx / imageWidth) * imageWidth;
                   double y =
                       (details.localPosition.dy / imageHeight) * imageHeight;
-
                   double resizedImageHeight = getCalculatedImageHeightByRatio(
                       imageWidth, imageHeight, screenWidth);
 
@@ -204,16 +232,25 @@ class _PressableImage extends State<PressableImage> {
                   // because on database refer to 1120 width image
                   searchGlyphs(
                       transformed.elementAt(0), transformed.elementAt(1));
+
                   // onTap(transformed.elementAt(0), transformed.elementAt(1));
                 }),
               );
             },
-            child: Image.asset(
-              widget.imageAssetPath,
-              width: MediaQuery.of(context)
-                  .size
-                  .width, // Lebar gambar mengikuti lebar layar
-              fit: BoxFit.fitWidth, // Mengisi gambar ke dalam kontainer
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                BlendMode.srcIn,
+              ),
+              child: Image.asset(
+                widget.imageAssetPath,
+                width: MediaQuery.of(context)
+                    .size
+                    .width, // Lebar gambar mengikuti lebar layar
+                fit: BoxFit.fitWidth, // Mengisi gambar ke dalam kontainer
+              ),
             ),
           ),
           highlights
