@@ -112,7 +112,7 @@ class _PressableImage extends State<PressableImage> {
     int lowest = ayahInfos.first.maxY;
 
     for (var ayahInfo in ayahInfos) {
-      if (ayahInfo.minX < lowest) {
+      if (ayahInfo.maxY > lowest) {
         lowest = ayahInfo.maxY;
       }
     }
