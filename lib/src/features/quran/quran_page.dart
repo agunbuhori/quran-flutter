@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quran/src/features/home/quran/tabs/history_tab.dart';
-import 'package:quran/src/features/home/quran/tabs/juz_tab.dart';
-import 'package:quran/src/features/home/quran/tabs/surah_tab.dart';
+import 'package:quran/src/features/quran/components/history_tab.dart';
+import 'package:quran/src/features/quran/components/juz_tab.dart';
+import 'package:quran/src/features/quran/components/surah_tab.dart';
 
 class QuranPage extends StatefulWidget {
   const QuranPage({super.key});

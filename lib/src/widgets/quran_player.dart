@@ -88,7 +88,7 @@ class _QuranPlayerState extends State<QuranPlayer> {
                       widget.onClose();
                       Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.stop_circle)),
+                    icon: const Icon(Icons.close)),
               ],
             ),
           )

@@ -3,9 +3,9 @@ import 'package:get/instance_manager.dart';
 import 'package:quran/src/common/consts/getx_tags.dart';
 import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/widgets/surah_name.dart';
-import 'package:quran/src/features/home/quran/components/list_detail.dart';
-import 'package:quran/src/features/home/quran/components/number_frame.dart';
-import 'package:quran/src/features/home/quran/components/read_surah_option_modal.dart';
+import 'package:quran/src/features/quran/components/list_detail.dart';
+import 'package:quran/src/features/quran/components/number_frame.dart';
+import 'package:quran/src/features/quran/components/read_surah_option_modal.dart';
 
 class SurahTab extends StatefulWidget {
   const SurahTab({super.key});

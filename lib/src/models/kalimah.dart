@@ -1,5 +1,3 @@
-import 'package:sqflite/sqflite.dart';
-
 class Kalimah {
   int id;
   int ayahId;

@@ -7,7 +7,7 @@ import 'package:quran/src/features/translation/components/bismillah.dart';
 import 'package:quran/src/features/translation/components/surah_header.dart';
 import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/models/surah.dart';
-import 'package:quran/src/widgets/ayah_option_modal.dart';
+import 'package:quran/src/widgets/surah_reading_mode_modal.dart';
 import 'package:quran/src/widgets/ayah_translation.dart';
 import 'package:quran/src/widgets/quran_player.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -127,7 +127,7 @@ class _TranslationPageState extends State<TranslationPage> {
                   showModalBottomSheet(
                       context: context,
                       builder: (context) {
-                        return AyahOptionModal(surah: surah, ayah: ayah);
+                        return SurahReadingModeModal(surah: surah, ayah: ayah);
                       });
                 },
                 child: AyahTranslation(

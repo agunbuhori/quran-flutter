@@ -23,6 +23,7 @@ class _QuranAppState extends State<QuranApp> {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 106, 55, 5)),
+        tabBarTheme: const TabBarTheme(indicatorColor: Colors.limeAccent),
         useMaterial3: true,
       ),
       themeMode: ThemeMode.dark,

@@ -4,7 +4,7 @@ import 'package:quran/src/common/consts/local_assets.dart';
 import 'package:quran/src/features/tilawah/components/pressable_image.dart';
 import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/models/surah.dart';
-import 'package:quran/src/widgets/ayah_option_modal.dart';
+import 'package:quran/src/widgets/surah_reading_mode_modal.dart';
 
 class TilawahPage extends StatefulWidget {
   final Surah surah;

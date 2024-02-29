@@ -3,16 +3,18 @@ import 'package:quran/src/features/tafseer/tafseer_page.dart';
 import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/models/surah.dart';
 
-class AyahOptionModal extends StatefulWidget {
+class SurahReadingModeModal extends StatefulWidget {
   final Surah surah;
   final Ayah ayah;
-  const AyahOptionModal({super.key, required this.surah, required this.ayah});
+
+  const SurahReadingModeModal(
+      {super.key, required this.surah, required this.ayah});
 
   @override
-  State<AyahOptionModal> createState() => _AyahOptionModalState();
+  State<SurahReadingModeModal> createState() => _SurahReadingModeModalState();
 }
 
-class _AyahOptionModalState extends State<AyahOptionModal> {
+class _SurahReadingModeModalState extends State<SurahReadingModeModal> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
