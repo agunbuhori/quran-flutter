@@ -1,4 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Add permission to access the internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Add permission to access network state (optional but recommended) -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:label="quran"
         android:name="${applicationName}"
@@ -29,6 +35,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and

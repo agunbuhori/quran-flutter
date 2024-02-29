@@ -6,12 +6,14 @@ class QuranPlayer extends StatefulWidget {
   final Function onClose;
   final String title;
   final String subtitle;
-  const QuranPlayer(
-      {super.key,
-      required this.url,
-      required this.onClose,
-      required this.title,
-      required this.subtitle});
+
+  const QuranPlayer({
+    super.key,
+    required this.url,
+    required this.onClose,
+    required this.title,
+    required this.subtitle,
+  });
 
   @override
   State<QuranPlayer> createState() => _QuranPlayerState();
@@ -58,41 +60,54 @@ class _QuranPlayerState extends State<QuranPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(widget.title,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text(widget.subtitle)
-            ]),
+    return Container(
+      constraints: const BoxConstraints(
+          maxHeight: 200), // Adjust the maxHeight as needed
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColorDark,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: IntrinsicHeight(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.title,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(widget.subtitle),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        !isPaused ? pauseAudio() : resumeAudio();
+                      },
+                      icon: Icon(isPaused ? Icons.play_arrow : Icons.pause),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        stopAudio();
+                        widget.onClose();
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      !isPaused ? pauseAudio() : resumeAudio();
-                    },
-                    icon: Icon(isPaused ? Icons.play_arrow : Icons.pause)),
-                IconButton(
-                    onPressed: () {
-                      stopAudio();
-                      widget.onClose();
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.close)),
-              ],
-            ),
-          )
-        ],
+        ),
       ),
     );
   }

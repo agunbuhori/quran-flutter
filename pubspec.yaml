@@ -49,9 +49,12 @@ flutter:
     - family: SuraNames
       fonts:
         - asset: assets/fonts/sura_names.ttf
-    - family: Hafs
+    - family: UthmanicHafs_V22
       fonts:
-        - asset: assets/fonts/uthmani_hafs_v12.otf
+        - asset: assets/fonts/UthmanicHafs_V22.ttf
+    - family: LPMQ
+      fonts:
+        - asset: assets/fonts/LPMQ.ttf
     - family: Bismillah
       fonts:
         - asset: assets/fonts/bismillah.ttf

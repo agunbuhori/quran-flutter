@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quran/src/common/consts/quran_database.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/models/ayah.dart';
+import 'package:quran/src/widgets/ayah_arabic.dart';
 import 'package:quran/src/widgets/clickable_sup_text.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -87,10 +88,9 @@ class _TafseerPageState extends State<TafseerPage> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text(
-                    ayah.textUthmani,
-                    textDirection: TextDirection.rtl,
-                    style: const TextStyle(fontFamily: "Hafs", fontSize: 24),
+                  AyahArabic(
+                    text: ayah.textUthmani,
+                    ayahNumber: ayah.ayahNumber,
                   ),
                   const SizedBox(height: 18),
                   ClickableSupText(text: ayah.translation ?? ""),

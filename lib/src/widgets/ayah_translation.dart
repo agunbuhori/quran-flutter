@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran/src/models/ayah.dart';
+import 'package:quran/src/widgets/ayah_arabic.dart';
 import 'package:quran/src/widgets/clickable_sup_text.dart';
 import 'package:quran/src/features/translation/components/ayah_frame.dart';
 
@@ -24,11 +25,9 @@ class AyahTranslation extends StatelessWidget {
                     children: [
                   Padding(
                       padding: const EdgeInsets.only(left: 8),
-                      child: Text(
-                        ayah.textUthmani,
-                        textDirection: TextDirection.rtl,
-                        style: const TextStyle(
-                            fontSize: 26, height: 1.85, fontFamily: 'Hafs'),
+                      child: AyahArabic(
+                        text: ayah.textUthmani,
+                        ayahNumber: ayah.ayahNumber,
                       )),
                   const SizedBox(height: 10),
                   ClickableSupText(
