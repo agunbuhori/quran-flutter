@@ -6,13 +6,19 @@ import 'package:quran/src/features/translation/components/ayah_frame.dart';
 
 class AyahTranslation extends StatelessWidget {
   final Ayah ayah;
+  final bool? highlight;
   final int number;
-  const AyahTranslation({super.key, required this.ayah, required this.number});
+  const AyahTranslation(
+      {super.key, required this.ayah, required this.number, this.highlight});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: double.infinity,
+      decoration: BoxDecoration(
+          color: highlight == true
+              ? Theme.of(context).highlightColor
+              : Colors.transparent),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         child: Row(

@@ -3,14 +3,14 @@ import 'package:quran/src/features/murotal/murotal_page.dart';
 import 'package:quran/src/features/quran/quran_page.dart';
 import 'package:quran/src/features/settings/settings_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeNavigator extends StatefulWidget {
+  const HomeNavigator({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeNavigator> createState() => _HomeNavigatorState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeNavigatorState extends State<HomeNavigator> {
   int index = 0;
 
   @override
@@ -36,7 +36,8 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(Icons.menu_book), label: 'Al-Quran'),
               BottomNavigationBarItem(icon: Icon(Icons.mic), label: 'Murotal'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: 'Pengaturan'),
+                  icon: Icon(Icons.video_camera_front_rounded),
+                  label: 'Kajian'),
             ],
           ),
         ));

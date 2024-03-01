@@ -1,3 +1,8 @@
+import 'package:quran/src/common/consts/quran_database.dart';
+import 'package:quran/src/config/sqlite.dart';
+import 'package:quran/src/models/kalimah.dart';
+import 'package:sqflite/sqflite.dart';
+
 class Ayah {
   final int id;
   final int surahId;
@@ -13,6 +18,7 @@ class Ayah {
   final String textUthmani;
   final String? translation;
   final String? transliteration;
+  final List<Kalimah>? kalimahs;
 
   Ayah(
       {required this.id,
@@ -28,7 +34,8 @@ class Ayah {
       required this.juzNumber,
       required this.textUthmani,
       this.translation,
-      this.transliteration});
+      this.transliteration,
+      this.kalimahs});
 
   Map<String, dynamic> toMap() {
     return {
@@ -65,5 +72,36 @@ class Ayah {
         textUthmani: map['text_uthmani'],
         transliteration: map['transliteration'],
         translation: map['translation']);
+  }
+
+  static Future<List<Ayah>?> getAyahsWithTranslationsBySurahId(
+      int surahId) async {
+    Database database = await SQLite.getDatabase(QuranDatabase.dbName);
+
+    List<Map<String, dynamic>> ayahsQuery = await database.rawQuery('''
+      SELECT * FROM Ayah
+      JOIN AyahTranslation
+        ON AyahTranslation.ayah_id = Ayah.id
+      WHERE Ayah.surah_id = ?
+    ''', [surahId]);
+    database.close();
+
+    return ayahsQuery.isNotEmpty
+        ? ayahsQuery.map((ayah) => Ayah.fromMap(ayah)).toList()
+        : null;
+  }
+
+  static Future<Ayah?> getAyahWithTranslationById(int ayahId) async {
+    Database database = await SQLite.getDatabase(QuranDatabase.dbName);
+
+    List<Map<String, dynamic>> ayahQuery = await database.rawQuery('''
+      SELECT * FROM Ayah
+      JOIN AyahTranslation
+        ON AyahTranslation.ayah_id = Ayah.id
+      WHERE Ayah.id = ?
+    ''', [ayahId]);
+    database.close();
+
+    return ayahQuery.isNotEmpty ? Ayah.fromMap(ayahQuery.first) : null;
   }
 }

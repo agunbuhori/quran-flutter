@@ -13,19 +13,22 @@ class ClickableSupText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      child: SelectableText.rich(
-        TextSpan(
-          children: _buildTextSpans(),
+    return IgnorePointer(
+      ignoring: true,
+      child: Container(
+        alignment: Alignment.centerLeft,
+        child: RichText(
+          text: TextSpan(
+            children: _buildTextSpans(context),
+          ),
+          textAlign: TextAlign.justify,
         ),
-        textAlign: TextAlign.justify,
       ),
     );
   }
 
-  List<InlineSpan> _buildTextSpans() {
-    List<InlineSpan> spans = [];
+  List<TextSpan> _buildTextSpans(BuildContext context) {
+    List<TextSpan> spans = [];
 
     RegExp regex = RegExp(r'<sup foot_note=(\d+)>(\d+)</sup>');
 

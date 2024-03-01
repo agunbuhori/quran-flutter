@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:quran/src/features/home/home_page.dart';
+import 'package:quran/src/features/navigator/home_navigator.dart';
 import 'package:quran/src/settings/settings_controller.dart';
 import 'package:quran/src/settings/settings_service.dart';
 
@@ -27,7 +27,7 @@ class _QuranAppState extends State<QuranApp> {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.dark,
-      home: const HomePage(),
+      home: const HomeNavigator(),
       debugShowCheckedModeBanner: false,
     );
   }

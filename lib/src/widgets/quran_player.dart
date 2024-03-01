@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:quran/src/api/services/quran_reciter_service.dart';
+import 'package:quran/src/common/consts/quran_reciters.dart';
+import 'package:quran/src/models/verse_timing.dart';
 
 class QuranPlayer extends StatefulWidget {
-  final String url;
+  final int surahId;
   final Function onClose;
+  final Function(Duration duration)? onPositionChanged;
+  final Function(int ayahId)? onAyahCaptured;
   final String title;
   final String subtitle;
 
-  const QuranPlayer({
-    super.key,
-    required this.url,
-    required this.onClose,
-    required this.title,
-    required this.subtitle,
-  });
+  const QuranPlayer(
+      {super.key,
+      required this.onClose,
+      required this.title,
+      required this.subtitle,
+      this.onPositionChanged,
+      required this.surahId,
+      this.onAyahCaptured});
 
   @override
   State<QuranPlayer> createState() => _QuranPlayerState();
@@ -22,6 +28,9 @@ class QuranPlayer extends StatefulWidget {
 class _QuranPlayerState extends State<QuranPlayer> {
   final player = AudioPlayer();
   bool isPaused = false;
+  QuranReciterService quranReciterService = QuranReciterService();
+  final AbuBakarShatri _abuBakarShatri = AbuBakarShatri();
+  late String currentVerseKey = "${widget.surahId}:1";
 
   @override
   void initState() {
@@ -29,12 +38,12 @@ class _QuranPlayerState extends State<QuranPlayer> {
     playAudio();
   }
 
-  @override
-  void dispose() {
-    stopAudio();
-    super.dispose();
-    widget.onClose();
-  }
+  // @override
+  // void dispose() {
+  //   stopAudio();
+  //   super.dispose();
+  //   widget.onClose();
+  // }
 
   void stopAudio() {
     player.stop();
@@ -54,8 +63,34 @@ class _QuranPlayerState extends State<QuranPlayer> {
     });
   }
 
+  int getAyahId(String verseKey) {
+    return int.parse(verseKey.split(':').elementAt(1));
+  }
+
+  void searchVerseByTimestamp(List<VerseTiming> verseTimings, int timestamp) {
+    VerseTiming verseTiming = verseTimings.firstWhere((verseTiming) =>
+        verseTiming.timestampFrom <= timestamp &&
+        verseTiming.timestampTo >= timestamp);
+
+    if (verseTiming.verseKey != currentVerseKey) {
+      setState(() {
+        currentVerseKey = verseTiming.verseKey;
+      });
+      widget.onAyahCaptured?.call(getAyahId(verseTiming.verseKey));
+    }
+  }
+
   Future<void> playAudio() async {
-    await player.play(UrlSource(widget.url));
+    quranReciterService.getRecitationTimes(widget.surahId).then((value) async {
+      await player.play(UrlSource(_abuBakarShatri.audioUrl
+          .replaceAll("{chapter}", widget.surahId.toString())));
+
+      widget.onAyahCaptured?.call(getAyahId(currentVerseKey));
+
+      player.onPositionChanged.listen((Duration position) {
+        searchVerseByTimestamp(value.verseTimings, position.inMilliseconds);
+      });
+    });
   }
 
   @override
@@ -86,21 +121,24 @@ class _QuranPlayerState extends State<QuranPlayer> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
+                child: Column(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        !isPaused ? pauseAudio() : resumeAudio();
-                      },
-                      icon: Icon(isPaused ? Icons.play_arrow : Icons.pause),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        stopAudio();
-                        widget.onClose();
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.close),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            !isPaused ? pauseAudio() : resumeAudio();
+                          },
+                          icon: Icon(isPaused ? Icons.play_arrow : Icons.pause),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            stopAudio();
+                            widget.onClose();
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
+import 'package:quran/src/common/consts/databases.dart';
 import 'package:quran/src/common/consts/getx_tags.dart';
-import 'package:quran/src/common/consts/quran_database.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/features/translation/components/bismillah.dart';
 import 'package:quran/src/features/translation/components/surah_header.dart';
 import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/widgets/ayah_option_modal.dart';
-import 'package:quran/src/widgets/custom_modal.dart';
 import 'package:quran/src/widgets/jump_to_ayah_modal.dart';
 import 'package:quran/src/widgets/ayah_translation.dart';
 import 'package:quran/src/widgets/quran_player.dart';
@@ -27,7 +27,8 @@ class TranslationPage extends StatefulWidget {
 class _TranslationPageState extends State<TranslationPage> {
   late Surah surah;
   List<Ayah> ayahs = [];
-  bool audioIsPlaying = false;
+  Ayah? _playAyahAudio;
+  int? highlightedAyahId;
   final ItemScrollController itemScrollController = ItemScrollController();
 
   @override
@@ -37,17 +38,25 @@ class _TranslationPageState extends State<TranslationPage> {
     loadAyahs();
   }
 
+  void highlightAyah(ayahId) {
+    setState(() {
+      highlightedAyahId = ayahId;
+    });
+    itemScrollController.scrollTo(
+        index: ayahId + 1, duration: const Duration(milliseconds: 300));
+  }
+
   Future<void> loadAyahs() async {
     Database database = await SQLite.getDatabase(QuranDatabase.dbName);
 
-    List<Map<String, dynamic>> ayahsQuery = await database.rawQuery('''
-      SELECT *, AyahTranslation.* FROM Ayah
-      JOIN AyahTranslation ON AyahTranslation.ayah_id = Ayah.id
-      WHERE surah_id = ?
-    ''', [surah.id]);
+    List<Ayah>? ayahsQuery =
+        await Ayah.getAyahsWithTranslationsBySurahId(surah.id);
 
     setState(() {
-      ayahs = ayahsQuery.map((e) => Ayah.fromMap(e)).toList();
+      ayahs = ayahsQuery ?? [];
+      if (_playAyahAudio != null) {
+        closeQuranPlayer();
+      }
     });
 
     database.close();
@@ -76,30 +85,20 @@ class _TranslationPageState extends State<TranslationPage> {
     );
   }
 
-  void openQuranPlayer() async {
+  void openQuranPlayer(Ayah ayah) async {
     Navigator.of(context).pop();
-    Future.delayed(const Duration(milliseconds: 500), () {
-      showDialog(
-        context: context,
-        barrierColor: Colors.transparent,
-        builder: (context) {
-          return CustomModal(
-            child: QuranPlayer(
-              title: "${surah.id}. ${surah.nameComplex}",
-              subtitle: "Memutar audio",
-              onClose: () {
-                closeQuranPlayer();
-              },
-              url:
-                  "https://download.quranicaudio.com/qdc/mishari_al_afasy/murattal/${surah.id}.mp3",
-            ),
-          );
-        },
-      );
+    setState(() {
+      _playAyahAudio = ayah;
     });
   }
 
-  void closeQuranPlayer() {}
+  void closeQuranPlayer() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      return setState(() {
+        _playAyahAudio = null;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,39 +140,59 @@ class _TranslationPageState extends State<TranslationPage> {
                 .toList(),
           ),
         ),
-        body: ScrollablePositionedList.builder(
-          itemCount: ayahs.length + (surah.bismillahPre == 1 ? 2 : 1),
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return SurahHeader(surah: surah);
-            }
+        body: Stack(
+          children: [
+            ScrollablePositionedList.builder(
+              itemCount: ayahs.length + (surah.bismillahPre == 1 ? 2 : 1),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return SurahHeader(surah: surah);
+                }
 
-            bool hasBismillah = surah.bismillahPre == 1;
+                bool hasBismillah = surah.bismillahPre == 1;
 
-            if (hasBismillah && index == 1) {
-              return const Bismillah();
-            }
+                if (hasBismillah && index == 1) {
+                  return const Bismillah();
+                }
 
-            Ayah ayah = ayahs[index - (hasBismillah ? 2 : 1)];
-            return InkWell(
-                onTap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return SurahReadingModeModal(
-                            surah: surah,
-                            ayah: ayah,
-                            onPlayAudio: () {
-                              openQuranPlayer();
-                            });
-                      });
-                },
-                child: AyahTranslation(
-                  ayah: ayah,
-                  number: index + 1,
-                ));
-          },
-          itemScrollController: itemScrollController,
+                Ayah ayah = ayahs[index - (hasBismillah ? 2 : 1)];
+                return InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return SurahReadingModeModal(
+                                surah: surah,
+                                ayah: ayah,
+                                onPlayAudio: () {
+                                  openQuranPlayer(ayah);
+                                });
+                          });
+                    },
+                    child: AyahTranslation(
+                      highlight: highlightedAyahId == ayah.id,
+                      ayah: ayah,
+                      number: index + 1,
+                    ));
+              },
+              itemScrollController: itemScrollController,
+            ),
+            if (_playAyahAudio != null)
+              Positioned(
+                  bottom: 16,
+                  left: 0,
+                  right: 0,
+                  child: QuranPlayer(
+                      surahId: surah.id,
+                      onAyahCaptured: (ayahId) {
+                        highlightAyah(ayahId);
+                      },
+                      onClose: () {
+                        closeQuranPlayer();
+                      },
+                      title: "${surah.id}. ${surah.nameComplex}",
+                      subtitle: "Memutar"))
+          ],
         ),
       ),
     );

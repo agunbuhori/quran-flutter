@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Page;
-import 'package:quran/src/common/consts/ayah_info_database.dart';
-import 'package:quran/src/common/consts/quran_database.dart';
+import 'package:quran/src/common/consts/databases.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/settings/settings_controller.dart';
 import 'package:quran/src/settings/settings_data.dart';

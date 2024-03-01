@@ -22,7 +22,12 @@ class _TilawahPageState extends State<TilawahPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Baca")),
+        appBar: AppBar(
+          title: const Text("Baca"),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.translate))
+          ],
+        ),
         body: PreloadPageView.builder(
             controller: pageController,
             preloadPagesCount: 5,

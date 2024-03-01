@@ -28,9 +28,9 @@ class ReadSurahOptionModal extends StatelessWidget {
             height: 10,
           ),
           ListTile(
-            leading: const Icon(Icons.import_contacts_outlined),
+            leading: const Icon(Icons.menu_book_rounded),
             contentPadding: EdgeInsets.zero,
-            title: const Text("Tilawah"),
+            title: const Text("Mushaf Madinah"),
             onTap: () {
               Navigator.push(
                   context,
@@ -39,9 +39,9 @@ class ReadSurahOptionModal extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.history_edu),
+            leading: const Icon(Icons.format_list_bulleted_rounded),
             contentPadding: EdgeInsets.zero,
-            title: const Text("Terjemahan"),
+            title: const Text("Baca Per-baris"),
             onTap: () {
               Navigator.push(
                   context,
