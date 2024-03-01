@@ -3,26 +3,26 @@ import 'package:quran/src/features/tafseer/tafseer_page.dart';
 import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/models/surah.dart';
 
-class SurahReadingModeModal extends StatefulWidget {
+class AyahOptionModal extends StatefulWidget {
   final Surah surah;
   final Ayah ayah;
   final Function? onPlayAudio;
 
-  const SurahReadingModeModal(
+  const AyahOptionModal(
       {super.key, required this.surah, required this.ayah, this.onPlayAudio});
 
   @override
-  State<SurahReadingModeModal> createState() => _SurahReadingModeModalState();
+  State<AyahOptionModal> createState() => _AyahOptionModalState();
 }
 
-class _SurahReadingModeModalState extends State<SurahReadingModeModal> {
+class _AyahOptionModalState extends State<AyahOptionModal> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: Center(
               child: Text(
                   style: const TextStyle(
@@ -43,16 +43,16 @@ class _SurahReadingModeModalState extends State<SurahReadingModeModal> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.bookmark_add_rounded),
-            title: const Text('Tandai Terakhir Dibaca'),
-            onTap: () {},
-          ),
-          ListTile(
             leading: const Icon(Icons.play_circle),
             title: const Text('Putar Audio'),
             onTap: () {
               widget.onPlayAudio!(); // Close the bottom sheet
             },
+          ),
+          ListTile(
+            leading: const Icon(Icons.bookmark_add_rounded),
+            title: const Text('Tandai Terakhir Dibaca'),
+            onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.file_copy),

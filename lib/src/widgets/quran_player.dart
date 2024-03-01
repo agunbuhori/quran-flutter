@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:get/get.dart';
 import 'package:quran/src/api/services/quran_reciter_service.dart';
 import 'package:quran/src/common/consts/quran_reciters.dart';
+import 'package:quran/src/models/surah.dart';
 import 'package:quran/src/models/verse_timing.dart';
 
 class QuranPlayer extends StatefulWidget {
-  final int surahId;
+  final Surah surah;
   final Function onClose;
   final Function(Duration duration)? onPositionChanged;
   final Function(int ayahNumber)? onAyahCaptured;
@@ -18,7 +20,7 @@ class QuranPlayer extends StatefulWidget {
       required this.title,
       required this.subtitle,
       this.onPositionChanged,
-      required this.surahId,
+      required this.surah,
       this.onAyahCaptured});
 
   @override
@@ -30,16 +32,29 @@ class _QuranPlayerState extends State<QuranPlayer> {
   bool isPaused = false;
   QuranReciterService quranReciterService = QuranReciterService();
   final AbuBakarShatri _abuBakarShatri = AbuBakarShatri();
-  late String currentVerseKey = "${widget.surahId}:1";
+  late String currentVerseKey = "${widget.surah.id}:1";
+  AbuBakarShatri abuBakarShatri = AbuBakarShatri();
 
   @override
   void initState() {
     super.initState();
     playAudio();
+
+    player.onPlayerStateChanged.listen((event) {
+      if (event == PlayerState.completed) {
+        widget.onClose();
+      }
+    });
   }
 
-  void stopAudio() {
-    player.stop();
+  @override
+  void dispose() {
+    stopAudio();
+    super.dispose();
+  }
+
+  void stopAudio() async {
+    await player.stop();
   }
 
   void pauseAudio() {
@@ -66,11 +81,11 @@ class _QuranPlayerState extends State<QuranPlayer> {
 
   void searchVerseByTimestamp(List<VerseTiming> verseTimings, int timestamp) {
     if (mounted) {
-      VerseTiming verseTiming = verseTimings.firstWhere((verseTiming) =>
+      VerseTiming? verseTiming = verseTimings.firstWhereOrNull((verseTiming) =>
           verseTiming.timestampFrom <= timestamp &&
           verseTiming.timestampTo >= timestamp);
 
-      if (verseTiming.verseKey != currentVerseKey) {
+      if (verseTiming?.verseKey != currentVerseKey && verseTiming != null) {
         setState(() {
           currentVerseKey = verseTiming.verseKey;
         });
@@ -80,11 +95,9 @@ class _QuranPlayerState extends State<QuranPlayer> {
   }
 
   Future<void> playAudio() async {
-    quranReciterService.getRecitationTimes(widget.surahId).then((value) async {
+    quranReciterService.getRecitationTimes(widget.surah.id).then((value) async {
       await player.play(UrlSource(_abuBakarShatri.audioUrl
-          .replaceAll("{chapter}", widget.surahId.toString())));
-
-      print("Make sure it's called once");
+          .replaceAll("{chapter}", widget.surah.id.toString())));
 
       widget.onAyahCaptured?.call(getayahNumber(currentVerseKey));
 
@@ -102,33 +115,34 @@ class _QuranPlayerState extends State<QuranPlayer> {
       child: Container(
         margin: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
+          color: Theme.of(context).colorScheme.onSecondary,
           borderRadius: BorderRadius.circular(8),
         ),
         child: IntrinsicHeight(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white)),
-                    Text(
-                      widget.subtitle,
-                      style: const TextStyle(color: Colors.white),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.title,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                        Text(
+                          widget.subtitle,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Row(
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
                       children: [
                         IconButton(
                           onPressed: () {
@@ -146,9 +160,16 @@ class _QuranPlayerState extends State<QuranPlayer> {
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+              LinearProgressIndicator(
+                value: getayahNumber(currentVerseKey) / widget.surah.ayahsCount,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(abuBakarShatri.name),
+              )
             ],
           ),
         ),

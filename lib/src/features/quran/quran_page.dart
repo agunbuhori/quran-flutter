@@ -25,6 +25,9 @@ class _QuranPageState extends State<QuranPage> {
         child: Scaffold(
             appBar: AppBar(
               title: const Text("Quran Tadabbur"),
+              actions: [
+                IconButton(onPressed: () {}, icon: const Icon(Icons.search))
+              ],
               bottom: const TabBar(tabs: [
                 Tab(text: "Surat"),
                 Tab(text: "Juz"),

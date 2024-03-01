@@ -30,6 +30,8 @@ class _TranslationPageState extends State<TranslationPage> {
   Ayah? playAyahAudio;
   int? highlightedAyahNumber;
   final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
 
   @override
   void initState() {
@@ -48,9 +50,11 @@ class _TranslationPageState extends State<TranslationPage> {
       setState(() {
         highlightedAyahNumber = ayahNumber;
       });
+
+      final scrollToIndex = ayahNumber + (surah.bismillahPre == 1 ? 1 : 0);
+
       itemScrollController.scrollTo(
-          index: ayahNumber + (surah.bismillahPre == 1 ? 1 : 0),
-          duration: const Duration(milliseconds: 300));
+          index: scrollToIndex, duration: const Duration(milliseconds: 300));
     }
   }
 
@@ -154,7 +158,9 @@ class _TranslationPageState extends State<TranslationPage> {
         body: Stack(
           children: [
             ScrollablePositionedList.builder(
+              physics: const ClampingScrollPhysics(),
               itemCount: ayahs.length + (surah.bismillahPre == 1 ? 2 : 1),
+              itemPositionsListener: itemPositionsListener,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return SurahHeader(surah: surah);
@@ -173,7 +179,7 @@ class _TranslationPageState extends State<TranslationPage> {
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return SurahReadingModeModal(
+                              return AyahOptionModal(
                                   surah: surah,
                                   ayah: ayah,
                                   onPlayAudio: () {
@@ -196,7 +202,7 @@ class _TranslationPageState extends State<TranslationPage> {
                   left: 0,
                   right: 0,
                   child: QuranPlayer(
-                      surahId: surah.id,
+                      surah: surah,
                       onAyahCaptured: (ayahNumber) {
                         highlightAyah(ayahNumber);
                       },
@@ -204,7 +210,8 @@ class _TranslationPageState extends State<TranslationPage> {
                         closeQuranPlayer();
                       },
                       title: "${surah.id}. ${surah.nameComplex}",
-                      subtitle: "Memutar"))
+                      subtitle:
+                          "Ayat $highlightedAyahNumber/${surah.ayahsCount}"))
           ],
         ),
       ),
