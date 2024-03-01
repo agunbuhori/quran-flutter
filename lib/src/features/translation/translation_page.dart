@@ -24,37 +24,35 @@ class TranslationPage extends StatefulWidget {
   State<TranslationPage> createState() => _TranslationPageState();
 }
 
-class _TranslationPageState extends State<TranslationPage> {
-  late Surah surah;
-  List<Ayah> ayahs = [];
-  Ayah? playAyahAudio;
-  int? highlightedAyahNumber;
-  final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionsListener =
+class _TranslationPageState extends State<TranslationPage>
+    with SingleTickerProviderStateMixin {
+  late Surah _surah;
+  List<Ayah> _ayahs = [];
+  Ayah? _playAyahAudio;
+  int? _highlightedAyahNumber;
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
       ItemPositionsListener.create();
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    surah = widget.surah;
+    _surah = widget.surah;
+    _tabController = TabController(
+        length: 114, vsync: this, initialIndex: 114 - widget.surah.id);
     loadAyahs();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   void highlightAyah(ayahNumber) {
     if (mounted) {
       setState(() {
-        highlightedAyahNumber = ayahNumber;
+        _highlightedAyahNumber = ayahNumber;
       });
 
-      final scrollToIndex = ayahNumber + (surah.bismillahPre == 1 ? 1 : 0);
+      final scrollToIndex = ayahNumber + (_surah.bismillahPre == 1 ? 1 : 0);
 
-      itemScrollController.scrollTo(
-          index: scrollToIndex, duration: const Duration(milliseconds: 300));
+      _itemScrollController.jumpTo(index: scrollToIndex);
     }
   }
 
@@ -62,11 +60,11 @@ class _TranslationPageState extends State<TranslationPage> {
     Database database = await SQLite.getDatabase(QuranDatabase.dbName);
 
     List<Ayah>? ayahsQuery =
-        await Ayah.getAyahsWithTranslationsBySurahId(surah.id);
+        await Ayah.getAyahsWithTranslationsBySurahId(_surah.id);
 
     setState(() {
-      ayahs = ayahsQuery ?? [];
-      if (playAyahAudio != null) {
+      _ayahs = ayahsQuery ?? [];
+      if (_playAyahAudio != null) {
         closeQuranPlayer();
       }
     });
@@ -80,7 +78,24 @@ class _TranslationPageState extends State<TranslationPage> {
       pageBuilder: (BuildContext buildContext, Animation<double> animation,
           Animation<double> secondaryAnimation) {
         return JumpToAyahModal(
-          surah: surah,
+          surah: _surah,
+          onGo: (surahId, ayahNumber) async {
+            if (surahId == _surah.id) {
+              _itemScrollController.jumpTo(index: ayahNumber + 1);
+              Navigator.of(context).pop();
+            } else {
+              Navigator.of(context).pop();
+              _surah = Get.find<List<Surah>>(tag: GetxTags.surahs)
+                  .firstWhere((e) => e.id == surahId);
+              _tabController.animateTo(114 - surahId);
+
+              loadAyahs();
+
+              Future.delayed(const Duration(microseconds: 1000), () {
+                _itemScrollController.jumpTo(index: ayahNumber + 1);
+              });
+            }
+          },
         );
       },
       barrierDismissible: true,
@@ -100,7 +115,7 @@ class _TranslationPageState extends State<TranslationPage> {
   void openQuranPlayer(Ayah ayah) async {
     Navigator.of(context).pop();
     setState(() {
-      playAyahAudio = ayah;
+      _playAyahAudio = ayah;
     });
   }
 
@@ -108,8 +123,8 @@ class _TranslationPageState extends State<TranslationPage> {
     if (mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         return setState(() {
-          playAyahAudio = null;
-          highlightedAyahNumber = null;
+          _playAyahAudio = null;
+          _highlightedAyahNumber = null;
         });
       });
     }
@@ -117,70 +132,68 @@ class _TranslationPageState extends State<TranslationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 114 - surah.id,
-      length: Get.find<List<Surah>>(tag: GetxTags.surahs).length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Terjemah"),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.move_down_outlined),
-              onPressed: () {
-                jumpToAyah();
-                // Perform action when search icon is pressed
-              },
-            ),
-          ],
-          bottom: TabBar(
-            isScrollable: true,
-            onTap: (value) async {
-              surah = Get.find<List<Surah>>(tag: GetxTags.surahs)
-                  .firstWhere((e) => e.id == 114 - value);
-
-              await loadAyahs();
-              itemScrollController.scrollTo(
-                index: 0,
-                duration: const Duration(milliseconds: 300),
-              );
-            },
-            tabs: Get.find<List<Surah>>(tag: GetxTags.surahs)
-                .map((e) => Tab(text: "${e.id}. ${e.nameComplex}"))
-                .toList()
-                .reversed
-                .toList(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Terjemah"),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {},
           ),
+          IconButton(
+            icon: const Icon(Icons.move_down_outlined),
+            onPressed: () {
+              jumpToAyah();
+              // Perform action when search icon is pressed
+            },
+          ),
+        ],
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          onTap: (value) async {
+            _surah = Get.find<List<Surah>>(tag: GetxTags.surahs)
+                .firstWhere((e) => e.id == 114 - value);
+
+            await loadAyahs();
+            _itemScrollController.scrollTo(
+              index: 0,
+              duration: const Duration(milliseconds: 300),
+            );
+          },
+          tabs: Get.find<List<Surah>>(tag: GetxTags.surahs)
+              .map((e) => Tab(text: "${e.id}. ${e.nameComplex}"))
+              .toList()
+              .reversed
+              .toList(),
         ),
-        body: Stack(
-          children: [
-            ScrollablePositionedList.builder(
-              physics: const ClampingScrollPhysics(),
-              itemCount: ayahs.length + (surah.bismillahPre == 1 ? 2 : 1),
-              itemPositionsListener: itemPositionsListener,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ScrollablePositionedList.builder(
+              itemCount: _ayahs.length + (_surah.bismillahPre == 1 ? 2 : 1),
+              itemPositionsListener: _itemPositionsListener,
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return SurahHeader(surah: surah);
+                  return SurahHeader(surah: _surah);
                 }
 
-                bool hasBismillah = surah.bismillahPre == 1;
+                bool hasBismillah = _surah.bismillahPre == 1;
 
                 if (hasBismillah && index == 1) {
                   return const Bismillah();
                 }
 
-                Ayah ayah = ayahs[index - (hasBismillah ? 2 : 1)];
+                Ayah ayah = _ayahs[index - (hasBismillah ? 2 : 1)];
                 return InkWell(
                     onTap: () {
-                      if (highlightedAyahNumber == null) {
+                      if (_highlightedAyahNumber == null) {
                         showModalBottomSheet(
                             context: context,
                             builder: (context) {
                               return AyahOptionModal(
-                                  surah: surah,
+                                  surah: _surah,
                                   ayah: ayah,
                                   onPlayAudio: () {
                                     openQuranPlayer(ayah);
@@ -189,31 +202,26 @@ class _TranslationPageState extends State<TranslationPage> {
                       }
                     },
                     child: AyahTranslation(
-                      highlight: highlightedAyahNumber == ayah.ayahNumber,
+                      highlight: _highlightedAyahNumber == ayah.ayahNumber,
                       ayah: ayah,
                       number: index + 1,
                     ));
               },
-              itemScrollController: itemScrollController,
+              itemScrollController: _itemScrollController,
             ),
-            if (playAyahAudio != null)
-              Positioned(
-                  bottom: 16,
-                  left: 0,
-                  right: 0,
-                  child: QuranPlayer(
-                      surah: surah,
-                      onAyahCaptured: (ayahNumber) {
-                        highlightAyah(ayahNumber);
-                      },
-                      onClose: () {
-                        closeQuranPlayer();
-                      },
-                      title: "${surah.id}. ${surah.nameComplex}",
-                      subtitle:
-                          "Ayat $highlightedAyahNumber/${surah.ayahsCount}"))
-          ],
-        ),
+          ),
+          if (_playAyahAudio != null)
+            QuranPlayer(
+                surah: _surah,
+                onAyahCaptured: (ayahNumber) {
+                  highlightAyah(ayahNumber);
+                },
+                onClose: () {
+                  closeQuranPlayer();
+                },
+                title: "${_surah.id}. ${_surah.nameComplex}",
+                subtitle: "Ayat $_highlightedAyahNumber/${_surah.ayahsCount}")
+        ],
       ),
     );
   }

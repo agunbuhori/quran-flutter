@@ -113,7 +113,7 @@ class _QuranPlayerState extends State<QuranPlayer> {
       constraints: const BoxConstraints(
           maxHeight: 200), // Adjust the maxHeight as needed
       child: Container(
-        margin: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.onSecondary,
           borderRadius: BorderRadius.circular(8),
