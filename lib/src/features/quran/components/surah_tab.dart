@@ -72,17 +72,23 @@ class _SurahTabState extends State<SurahTab> {
         onTap: () {
           onSurahClicked(surah);
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              NumberFrame(number: surah.id),
-              ListDetail(
-                  title: surah.nameComplex, subtitle: surah.nameIndonesian),
-              const Spacer(),
-              SurahName(text: surah.id.toString().padLeft(3, '0'))
-            ],
+        child: Container(
+          decoration: BoxDecoration(
+              color: index % 2 == 1
+                  ? Theme.of(context).hoverColor
+                  : Colors.transparent),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                NumberFrame(number: surah.id),
+                ListDetail(
+                    title: surah.nameComplex, subtitle: surah.nameIndonesian),
+                const Spacer(),
+                SurahName(text: surah.id.toString().padLeft(3, '0'))
+              ],
+            ),
           ),
         ));
   }

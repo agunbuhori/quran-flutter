@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran/src/common/consts/quran_database.dart';
+import 'package:quran/src/common/consts/databases.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:quran/src/models/ayah.dart';
 import 'package:quran/src/widgets/ayah_arabic.dart';

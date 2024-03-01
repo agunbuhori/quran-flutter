@@ -18,13 +18,19 @@ class _JuzTabState extends State<JuzTab> {
   Widget juzBuilder(BuildContext context, int index) {
     Juz juz = juzs[index];
     return InkWell(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          children: [
-            NumberFrame(number: juz.number),
-            ListDetail(title: "Juz ${juz.number}", subtitle: juz.startFrom)
-          ],
+      child: Container(
+        decoration: BoxDecoration(
+            color: index % 2 == 1
+                ? Theme.of(context).hoverColor
+                : Colors.transparent),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            children: [
+              NumberFrame(number: juz.number),
+              ListDetail(title: "Juz ${juz.number}", subtitle: juz.startFrom)
+            ],
+          ),
         ),
       ),
     );

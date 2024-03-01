@@ -27,8 +27,8 @@ class TranslationPage extends StatefulWidget {
 class _TranslationPageState extends State<TranslationPage> {
   late Surah surah;
   List<Ayah> ayahs = [];
-  Ayah? _playAyahAudio;
-  int? highlightedAyahId;
+  Ayah? playAyahAudio;
+  int? highlightedAyahNumber;
   final ItemScrollController itemScrollController = ItemScrollController();
 
   @override
@@ -38,12 +38,20 @@ class _TranslationPageState extends State<TranslationPage> {
     loadAyahs();
   }
 
-  void highlightAyah(ayahId) {
-    setState(() {
-      highlightedAyahId = ayahId;
-    });
-    itemScrollController.scrollTo(
-        index: ayahId + 1, duration: const Duration(milliseconds: 300));
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void highlightAyah(ayahNumber) {
+    if (mounted) {
+      setState(() {
+        highlightedAyahNumber = ayahNumber;
+      });
+      itemScrollController.scrollTo(
+          index: ayahNumber + (surah.bismillahPre == 1 ? 1 : 0),
+          duration: const Duration(milliseconds: 300));
+    }
   }
 
   Future<void> loadAyahs() async {
@@ -54,7 +62,7 @@ class _TranslationPageState extends State<TranslationPage> {
 
     setState(() {
       ayahs = ayahsQuery ?? [];
-      if (_playAyahAudio != null) {
+      if (playAyahAudio != null) {
         closeQuranPlayer();
       }
     });
@@ -88,16 +96,19 @@ class _TranslationPageState extends State<TranslationPage> {
   void openQuranPlayer(Ayah ayah) async {
     Navigator.of(context).pop();
     setState(() {
-      _playAyahAudio = ayah;
+      playAyahAudio = ayah;
     });
   }
 
   void closeQuranPlayer() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      return setState(() {
-        _playAyahAudio = null;
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        return setState(() {
+          playAyahAudio = null;
+          highlightedAyahNumber = null;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -158,34 +169,36 @@ class _TranslationPageState extends State<TranslationPage> {
                 Ayah ayah = ayahs[index - (hasBismillah ? 2 : 1)];
                 return InkWell(
                     onTap: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return SurahReadingModeModal(
-                                surah: surah,
-                                ayah: ayah,
-                                onPlayAudio: () {
-                                  openQuranPlayer(ayah);
-                                });
-                          });
+                      if (highlightedAyahNumber == null) {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return SurahReadingModeModal(
+                                  surah: surah,
+                                  ayah: ayah,
+                                  onPlayAudio: () {
+                                    openQuranPlayer(ayah);
+                                  });
+                            });
+                      }
                     },
                     child: AyahTranslation(
-                      highlight: highlightedAyahId == ayah.id,
+                      highlight: highlightedAyahNumber == ayah.ayahNumber,
                       ayah: ayah,
                       number: index + 1,
                     ));
               },
               itemScrollController: itemScrollController,
             ),
-            if (_playAyahAudio != null)
+            if (playAyahAudio != null)
               Positioned(
                   bottom: 16,
                   left: 0,
                   right: 0,
                   child: QuranPlayer(
                       surahId: surah.id,
-                      onAyahCaptured: (ayahId) {
-                        highlightAyah(ayahId);
+                      onAyahCaptured: (ayahNumber) {
+                        highlightAyah(ayahNumber);
                       },
                       onClose: () {
                         closeQuranPlayer();

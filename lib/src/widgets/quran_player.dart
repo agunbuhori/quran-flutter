@@ -8,7 +8,7 @@ class QuranPlayer extends StatefulWidget {
   final int surahId;
   final Function onClose;
   final Function(Duration duration)? onPositionChanged;
-  final Function(int ayahId)? onAyahCaptured;
+  final Function(int ayahNumber)? onAyahCaptured;
   final String title;
   final String subtitle;
 
@@ -38,45 +38,44 @@ class _QuranPlayerState extends State<QuranPlayer> {
     playAudio();
   }
 
-  // @override
-  // void dispose() {
-  //   stopAudio();
-  //   super.dispose();
-  //   widget.onClose();
-  // }
-
   void stopAudio() {
     player.stop();
   }
 
   void pauseAudio() {
-    player.pause();
-    setState(() {
-      isPaused = true;
-    });
+    if (mounted) {
+      player.pause();
+      setState(() {
+        isPaused = true;
+      });
+    }
   }
 
   void resumeAudio() {
-    player.resume();
-    setState(() {
-      isPaused = false;
-    });
+    if (mounted) {
+      player.resume();
+      setState(() {
+        isPaused = false;
+      });
+    }
   }
 
-  int getAyahId(String verseKey) {
+  int getayahNumber(String verseKey) {
     return int.parse(verseKey.split(':').elementAt(1));
   }
 
   void searchVerseByTimestamp(List<VerseTiming> verseTimings, int timestamp) {
-    VerseTiming verseTiming = verseTimings.firstWhere((verseTiming) =>
-        verseTiming.timestampFrom <= timestamp &&
-        verseTiming.timestampTo >= timestamp);
+    if (mounted) {
+      VerseTiming verseTiming = verseTimings.firstWhere((verseTiming) =>
+          verseTiming.timestampFrom <= timestamp &&
+          verseTiming.timestampTo >= timestamp);
 
-    if (verseTiming.verseKey != currentVerseKey) {
-      setState(() {
-        currentVerseKey = verseTiming.verseKey;
-      });
-      widget.onAyahCaptured?.call(getAyahId(verseTiming.verseKey));
+      if (verseTiming.verseKey != currentVerseKey) {
+        setState(() {
+          currentVerseKey = verseTiming.verseKey;
+        });
+        widget.onAyahCaptured?.call(getayahNumber(verseTiming.verseKey));
+      }
     }
   }
 
@@ -85,7 +84,9 @@ class _QuranPlayerState extends State<QuranPlayer> {
       await player.play(UrlSource(_abuBakarShatri.audioUrl
           .replaceAll("{chapter}", widget.surahId.toString())));
 
-      widget.onAyahCaptured?.call(getAyahId(currentVerseKey));
+      print("Make sure it's called once");
+
+      widget.onAyahCaptured?.call(getayahNumber(currentVerseKey));
 
       player.onPositionChanged.listen((Duration position) {
         searchVerseByTimestamp(value.verseTimings, position.inMilliseconds);
@@ -101,7 +102,7 @@ class _QuranPlayerState extends State<QuranPlayer> {
       child: Container(
         margin: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(8),
         ),
         child: IntrinsicHeight(
@@ -114,8 +115,12 @@ class _QuranPlayerState extends State<QuranPlayer> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.title,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text(widget.subtitle),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
+                    Text(
+                      widget.subtitle,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
@@ -129,14 +134,15 @@ class _QuranPlayerState extends State<QuranPlayer> {
                           onPressed: () {
                             !isPaused ? pauseAudio() : resumeAudio();
                           },
-                          icon: Icon(isPaused ? Icons.play_arrow : Icons.pause),
+                          icon: Icon(isPaused ? Icons.play_arrow : Icons.pause,
+                              color: Colors.white),
                         ),
                         IconButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            await widget.onClose();
                             stopAudio();
-                            widget.onClose();
                           },
-                          icon: const Icon(Icons.close),
+                          icon: const Icon(Icons.close, color: Colors.white),
                         ),
                       ],
                     ),

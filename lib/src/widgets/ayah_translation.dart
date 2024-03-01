@@ -16,15 +16,20 @@ class AyahTranslation extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-          color: highlight == true
-              ? Theme.of(context).highlightColor
-              : Colors.transparent),
+        color:
+            number % 2 == 0 ? Theme.of(context).hoverColor : Colors.transparent,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AyahFrame(number: ayah.ayahNumber),
+            Column(
+              children: [
+                AyahFrame(number: ayah.ayahNumber),
+                if (highlight == true) const Icon(Icons.multitrack_audio_sharp)
+              ],
+            ),
             Expanded(
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,

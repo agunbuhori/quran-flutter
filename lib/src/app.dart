@@ -19,11 +19,13 @@ class _QuranAppState extends State<QuranApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      darkTheme: ThemeData(brightness: Brightness.dark),
+      darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          colorSchemeSeed: const Color.fromARGB(255, 73, 39, 6),
+          useMaterial3: true),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 106, 55, 5)),
-        tabBarTheme: const TabBarTheme(indicatorColor: Colors.limeAccent),
+            seedColor: const Color.fromARGB(255, 73, 39, 6)),
         useMaterial3: true,
       ),
       themeMode: ThemeMode.dark,

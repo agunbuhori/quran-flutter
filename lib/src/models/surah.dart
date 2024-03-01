@@ -1,4 +1,4 @@
-import 'package:quran/src/common/consts/quran_database.dart';
+import 'package:quran/src/common/consts/databases.dart';
 import 'package:quran/src/config/sqlite.dart';
 import 'package:sqflite/sqflite.dart';
 
